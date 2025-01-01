@@ -94,14 +94,16 @@ jobs:
           img=$(cat images-init.yml)
           for i in ${img[@]}
           do
-            tagName=$(echo $i | awk -F "/" '{print $NF}')
-            fullTag=${TARGET_REGISTRY}/${TARGET_NAMESPACE}/${tagName}
-            echo $i: $fullTag >> images.yml
-            echo $fullTag >> dockerhub-image.yml
-            echo "镜像ID: $i -> $fullTag"  # 打印镜像的源和目标路径
+            tagName=$(echo $i | awk -F "/" '{print $NF}');
+            echo $i: ${TARGET_REGISTRY}/${TARGET_NAMESPACE}/${tagName} >> images.yml;
+            echo ${TARGET_REGISTRY}/${TARGET_NAMESPACE}/${tagName} >> dockerhub-image.yml;
           done
+          echo "打印images.yml"
           cat images.yml
-          ./image-syncer  --auth=./auth.yml --images=./images.yml
+          echo "打印images.yml"
+          cat images-init.yml
+          echo "END"
+    ./image-syncer  --auth=./auth.yml --images=./images.yml
       - name: Add Success Issues(添加成功Issues)
         if: ${{ success() && steps.check_body.outputs.is_image_format == 'true' }} 
         uses: actions/github-script@v5

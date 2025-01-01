@@ -28,17 +28,17 @@ jobs:
         uses: actions/checkout@v2
       # - uses: hmarr/debug-action@v2
       #   name: debug
-      - name: Set up Python
+      - name: Set up Python(设置Python)
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
-      - name: Check issue body for image format
+      - name: Check issue body for image format(检查issue正文中的镜像格式)
         id: check_body
         run: |
           python .github/scripts/check_image_format.py "${{ github.event.issue.body }}"
 
-      - name: Add comment if body is not image format
+      - name: Add comment if body is not image format(如果正文不是镜像格式，则添加注释)
         if: steps.check_body.outputs.is_image_format == 'false'
         uses: peter-evans/create-or-update-comment@v2
         with:
@@ -51,14 +51,14 @@ jobs:
           reactions: hooray
           edit-mode: replace
 
-      - name: Add image-mirror label if body is image format
+      - name: Add image-mirror label if body is image format(如果正文是镜像格式，则添加镜像标签)
         if: steps.check_body.outputs.is_image_format == 'true'
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: 'image-mirror'
 
-      - name: Create comment
+      - name: Create comment(创建评论)
         if: ${{ steps.check_body.outputs.is_image_format == 'true' && steps.fc.outputs.comment-id == '' }}
         uses: peter-evans/create-or-update-comment@v2
         with:
@@ -68,13 +68,13 @@ jobs:
             [Check the progress](https://github.com/${{ github.repository_owner }}/image-mirror/actions/runs/${{ github.run_id }})    
           reactions: rocket
 
-      - name: prepare
+      - name: prepare(准备)
         if: steps.check_body.outputs.is_image_format == 'true'
         run: |
-          wget -q  https://github.com/AliyunContainerService/image-syncer/releases/download/v1.5.4/image-syncer-v1.5.4-linux-amd64.tar.gz
+          wget -q  https://github.com/AliyunContainerService/image-syncer/releases/download/v1.5.5/image-syncer-v1.5.5-linux-amd64.tar.gz
           tar zxf image-syncer-v1.5.4-linux-amd64.tar.gz 
           sudo  apt install dos2unix 
-      - name: start sync
+      - name: start syn(开始同步)
         if: steps.check_body.outputs.is_image_format == 'true'
         id: syncImage
         env:
@@ -100,7 +100,7 @@ jobs:
           done
           cat images.yml
           ./image-syncer  --auth=./auth.yml --images=./images.yml 
-      - name: Add Success Issues
+      - name: Add Success Issues(添加成功Issues)
         if: ${{ success() && steps.check_body.outputs.is_image_format == 'true' }} 
         uses: actions/github-script@v5
         with:
@@ -133,7 +133,7 @@ jobs:
           sourceImage="${sourceImage//$'\r'/'%0D'}" 
           echo "::set-output name=sourceImage::$sourceImage"
 
-      - name: Find Comment
+      - name: Find Comment(查找评论)
         if: steps.check_body.outputs.is_image_format == 'true'      
         uses: peter-evans/find-comment@v2
         id: fc
@@ -142,7 +142,7 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: Syncing image to TargetRegistry
 
-      - name: Add Tips
+      - name: Add Tips(添加提示)
         if: ${{ success() && steps.check_body.outputs.is_image_format == 'true'  }} 
         uses: peter-evans/create-or-update-comment@v2
         with:

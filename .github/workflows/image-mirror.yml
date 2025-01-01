@@ -72,7 +72,7 @@ jobs:
         if: steps.check_body.outputs.is_image_format == 'true'
         run: |
           wget -q  https://github.com/AliyunContainerService/image-syncer/releases/download/v1.5.5/image-syncer-v1.5.5-linux-amd64.tar.gz
-          tar zxf image-syncer-v1.5.5-linux-amd64.tar.gz 
+          tar zxf image-syncer-v1.5.5-linux-amd64.tar.gz
           sudo  apt install dos2unix 
       - name: start syn(开始同步)
         if: steps.check_body.outputs.is_image_format == 'true'
@@ -118,20 +118,21 @@ jobs:
           body="$(cat script.md)"
           body="${body//'%'/'%25'}"
           body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}" 
-          echo "::set-output name=body::$body"
+          body="${body//$'\r'/'%0D'}"
+          echo "body=$body" >> $GITHUB_ENV
+
 
           dockerhubImage="$(cat dockerhub-image.yml)"
           dockerhubImage="${dockerhubImage//'%'/'%25'}"
           dockerhubImage="${dockerhubImage//$'\n'/'%0A'}"
-          dockerhubImage="${dockerhubImage//$'\r'/'%0D'}" 
-          echo "::set-output name=dockerhubImage::$dockerhubImage"
+          dockerhubImage="${dockerhubImage//$'\r'/'%0D'}"
+          echo "dockerhubImage=$dockerhubImage" >> $GITHUB_ENV
 
           sourceImage="$(cat images-init.yml)"
           sourceImage="${sourceImage//'%'/'%25'}"
           sourceImage="${sourceImage//$'\n'/'%0A'}"
-          sourceImage="${sourceImage//$'\r'/'%0D'}" 
-          echo "::set-output name=sourceImage::$sourceImage"
+          sourceImage="${sourceImage//$'\r'/'%0D'}"
+          echo "sourceImage=$sourceImage" >> $GITHUB_ENV
 
       - name: Find Comment(查找评论)
         if: steps.check_body.outputs.is_image_format == 'true'      

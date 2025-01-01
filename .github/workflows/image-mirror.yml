@@ -86,7 +86,7 @@ jobs:
           TARGET_REGISTRY: ${{ vars.TARGET_REGISTRY }}
         #处理body中的空格和tab和换行，并在结尾添加: ， 写入images.yml 文件
         run: |
-          echo "${{ github.event.issue.body }}" > images-init.yml 
+          echo "${{ github.event.issue.body }}" > images-init.yml
           dos2unix              images-init.yml
           sed -i 's/^[ \t]*//g' images-init.yml
           sed -i 's/[ \t]*$//g' images-init.yml
@@ -103,7 +103,7 @@ jobs:
           echo "打印images.yml"
           cat images-init.yml
           echo "END"
-    ./image-syncer  --auth=./auth.yml --images=./images.yml
+          ./image-syncer  --auth=./auth.yml --images=./images.yml
       - name: Add Success Issues(添加成功Issues)
         if: ${{ success() && steps.check_body.outputs.is_image_format == 'true' }} 
         uses: actions/github-script@v5
